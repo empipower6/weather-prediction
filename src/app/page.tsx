@@ -15,7 +15,7 @@ export default function Home() {
     temperature: "-",
     humidity: "-",
     wind: "-",
-    fetch: false
+    fetch: false,
   });
   const [error, setError] = useState("");
   const [ellipsisColor, setEllipsisColor] = useState({
@@ -23,12 +23,20 @@ export default function Home() {
     second: generateRandomRGB(),
   });
 
+  const currentDate = new Date(); // Get the current date
+  const currentYear = currentDate.getFullYear(); // Get the current year
+
+  const formattedDate = `${currentDate.toLocaleString("en-US", {
+    month: "long",
+  })} ${currentDate.getDate()}`; // Format the date
+
   useEffect(() => {
     document.addEventListener("mousemove", (e) => {
-      const rgbValue = Math.floor(Number(e.screenX)*256/Number(window.innerWidth)) - 1;
+      const rgbValue =
+        Math.floor((Number(e.screenX) * 256) / Number(window.innerWidth)) - 1;
       const newColors = {
         first: ellipsisColor.first,
-        second: [ellipsisColor.second[0], rgbValue,rgbValue],
+        second: [ellipsisColor.second[0], rgbValue, rgbValue],
       };
       setEllipsisColor(newColors);
     });
@@ -81,7 +89,7 @@ export default function Home() {
           <div className={styles.sectionTop}>
             <p>{error}</p>
             <h1 className={styles.date}>
-              March 13th, <b style={{ color: "#F25858" }}> 2044 </b>
+              {formattedDate}, <b style={{ color: "#F25858" }}> {Number(currentYear)+20} </b>
             </h1>
             <h2 className={styles.temperature}>{weatherData.temperature}C</h2>
           </div>
