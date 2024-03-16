@@ -1,0 +1,102 @@
+.main {
+  color: white;
+  margin: 100px;
+  padding: 0;
+
+  .mainContainer {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    padding: 0;
+    margin: 0;
+
+    .left,
+    .right {
+      width: 50%;
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+      padding: 0;
+      margin: 0;
+    }
+    .left {
+      flex-flow: column nowrap;
+      padding: 0;
+      margin: 0;
+      .sectionTop {
+        padding: 0;
+        margin: 0;
+        height: 300px;
+        .date,
+        .temperature {
+          padding: 0;
+          margin: 0;
+        }
+        .date {
+          font-size: 32px;
+          font-weight: 300;
+        }
+        .temperature {
+          font-size: 150px;
+          font-weight: 700;
+        }
+      }
+      .sectionBottom {
+        padding: 0;
+        margin: 0;
+        .location,
+        .details {
+          font-weight: 700;
+          padding: 0;
+          margin: 0;
+        }
+        .location {
+          font-size: 40px;
+          height: 50px;
+        }
+        .details {
+          font-size: 15px;
+          padding-bottom: 10px;
+          font-weight: 300;
+        }
+      }
+    }
+    .right {
+      flex-flow: row nowrap;
+      padding: 0;
+      margin: 0;
+      .caution {
+        padding: 0;
+        margin: 0;
+
+        .cautionTitle,
+        .cautionItem {
+          padding: 0;
+          margin: 0;
+        }
+        .cautionTitle {
+          height: 50px;
+          display: flex;
+          align-items: flex-end;
+        }
+        .cautionItem {
+          font-size: 15px;
+          padding-bottom: 10px;
+        }
+      }
+      .graphics {
+        padding: 0;
+        margin: 0;
+        .sphere2 {
+          margin-top: -50px;
+        }
+      }
+    }
+  }
+}
+.alignmentSpace {
+  height: 300px;
+}
+.titletoParagraphSpace {
+  height: 30px;
+}

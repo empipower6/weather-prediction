@@ -1,94 +1,121 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import styles from "./scss/weather.module.scss";
+import Ellipse from "./components/svg/ellipse";
+import { use, useEffect, useState } from "react";
+import { generateRandomRGB } from "./components/library/hexcodeGenerator";
+import { findLocation } from "./components/library/locationFinder";
+
+import { Inter } from "next/font/google";
+const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const [weatherData, setWeatherData] = useState({
+    name: "-",
+    country: "-",
+    temperature: "-",
+    humidity: "-",
+    wind: "-",
+    fetch: false
+  });
+  const [error, setError] = useState("");
+  const [ellipsisColor, setEllipsisColor] = useState({
+    first: generateRandomRGB(),
+    second: generateRandomRGB(),
+  });
+
+  useEffect(() => {
+    document.addEventListener("mousemove", (e) => {
+      const rgbValue = Math.floor(Number(e.screenX)*256/Number(window.innerWidth)) - 1;
+      const newColors = {
+        first: ellipsisColor.first,
+        second: [ellipsisColor.second[0], rgbValue,rgbValue],
+      };
+      setEllipsisColor(newColors);
+    });
+  });
+  useEffect(() => {
+    // let location: (string | number)[] = findLocation();
+    //If the location is not found, location will return an error message
+    //In that case, we'll use the default location Toronto longitude and latitude
+    // if (location && location[2]) {
+    //   setError(String(location[2]));
+    // }
+    //default by toronto for now
+    const location = [43.6534817, -79.3839347];
+    if (!weatherData.fetch) {
+      fetchWeatherData(Number(location[0]), Number(location[1]));
+    }
+  }, []); // Empty dependency array ensures this effect runs only once, on component mount
+
+  // Function to fetch weather data from the OpenWeatherMap API
+  const fetchWeatherData = (latitude: number, longitude: number) => {
+    fetch(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${process.env.NEXT_PUBLIC_WEATHER_KEY}&units=metric`
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch weather data");
+        }
+        return response.json(); // Parse response body as JSON
+      })
+      .then((data) => {
+        // Set the weather data state
+        setWeatherData({
+          name: data.name,
+          country: data.sys.country,
+          temperature: String(Math.ceil(data.main.temp) + 12),
+          humidity: data.main.humidity,
+          wind: data.wind.speed,
+          fetch: true,
+        });
+      })
+      .catch((error) => {
+        // Handle fetch errors
+        setError("Failed to fetch weather data: " + error.message);
+      });
+  };
   return (
     <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+      <div className={styles.mainContainer}>
+        <div className={styles.left}>
+          <div className={styles.sectionTop}>
+            <p>{error}</p>
+            <h1 className={styles.date}>
+              March 13th, <b style={{ color: "#F25858" }}> 2044 </b>
+            </h1>
+            <h2 className={styles.temperature}>{weatherData.temperature}C</h2>
+          </div>
+          <div className={styles.sectionBottom}>
+            <h3 className={styles.location}>
+              {weatherData.name} {weatherData.country}
+            </h3>
+            <div className={styles.titletoParagraphSpace}></div>
+            <p className={styles.details}>Wind: {weatherData.wind}</p>
+            <p className={styles.details}>Humidity: {weatherData.humidity}</p>
+          </div>
         </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+        <div className={styles.right}>
+          <div className={styles.caution}>
+            <div className={styles.alignmentSpace}></div>
+            <h2 className={styles.cautionTitle}>Caution</h2>
+            <div className={styles.titletoParagraphSpace}></div>
+            <p className={styles.cautionItem}>
+              Drink plenty of water to stay hydrated.
+            </p>
+            <p className={styles.cautionItem}>
+              Avoid unnecessary outdoor activities, especially during the peak
+              heat hours between 10 a.m. and 4 p.m.
+            </p>
+          </div>
+          <div className={styles.graphics}>
+            <div className={styles.sphere1}>
+              <Ellipse color={ellipsisColor.first} />
+            </div>
+            <div className={styles.sphere2}>
+              <Ellipse color={ellipsisColor.second} />
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   );
