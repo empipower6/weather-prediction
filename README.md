@@ -25,7 +25,7 @@ This app collects current weather data from Open Weather based on your location 
 
 ### Website 🔗
 
-Check out the Weather Predictor App [here](https://www.example.com).
+Check out the Weather Predictor App [here](https://weather-predictability.netlify.app/).
 
 ### Disclaimer ⚠️
 
