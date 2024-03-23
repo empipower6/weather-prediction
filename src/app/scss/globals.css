@@ -2,3 +2,10 @@ body{
   background-color:#1F1D1D;
   overflow: hidden;
 }
+
+@media only screen and (max-width: 768px) {
+
+  body{
+    overflow: scroll;
+  }
+}
